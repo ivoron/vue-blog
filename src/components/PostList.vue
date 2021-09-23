@@ -1,7 +1,7 @@
 <template>
   <div v-if="posts.length">
-    <div class="app__direct">
-      <h3 class="postList">Список постов:</h3>
+    <div class="post-header">
+      <h3>Список постов:</h3>
       <my-select
         v-model="sortType"
         @change="$emit('sortPosts', sortType)"
@@ -43,13 +43,10 @@ export default {
 </script>
 
 <style>
-.postList {
-  margin: 10px;
-}
-.app__direct {
+.post-header {
   display: flex;
   justify-content: space-between;
-  margin-right: 10px;
+  padding: 10px 0;
 }
 .list-item {
   display: inline-block;

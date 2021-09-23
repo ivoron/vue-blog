@@ -16,10 +16,13 @@ export default {
 </script>
 <style>
 .input {
-  width: 100%;
   border: 2px solid rgb(224, 99, 255);
-  padding: 5px;
-  margin-top: 5px;
-  margin-right: 5px;
+  padding: 8px;
+  max-width: 150px;
+  height: 30px;
+  border-radius: 10px;
 }
+/* .input :focus {
+  border: 1px solid rgb(214, 118, 238);
+} */
 </style>

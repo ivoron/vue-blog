@@ -21,9 +21,8 @@ export default {
 .post {
   border: 2px solid rgb(224, 99, 255);
   padding: 10px;
-  margin: 5px 10px;
   display: flex;
+  margin-bottom: 5px;
   justify-content: space-between;
-  align-items: center;
 }
 </style>

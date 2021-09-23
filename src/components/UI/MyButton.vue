@@ -8,11 +8,9 @@ export default {
 </script>
 <style>
 .btn {
-  margin: 10px 0px;
   padding: 5px 10px;
   background: none;
-  align-self: flex-end;
+  align-self: center;
   border: 2px solid rgb(224, 99, 255);
-  margin-left: 10px;
 }
 </style>
