@@ -17,6 +17,7 @@
       :sortType="sortType"
       @sortPosts="sortPosts"
     />
+    <div ref="observer" class="observer"></div>
   </div>
 </template>
 
@@ -69,17 +70,48 @@ export default {
           }
         );
         this.posts = response.data;
-        this.isLoading = false;
         this.totalPages = Math.ceil(
           response.headers["x-total-count"] / this.limit
         );
       } catch (e) {
         console.log(e);
+      } finally {
+        this.isLoading = false;
+      }
+    },
+    async fetchMorePosts() {
+      if (this.currentPage < this.totalPages) {
+        try {
+          this.currentPage++;
+          const response = await axios.get(
+            "https://jsonplaceholder.typicode.com/posts/",
+            {
+              params: {
+                _page: this.currentPage,
+                _limit: this.limit,
+              },
+            }
+          );
+          this.posts = [...this.posts, ...response.data];
+        } catch (e) {
+          console.log(e);
+        }
       }
     },
   },
   mounted() {
     this.fetchPosts();
+    const options = {
+      rootMargin: "100px",
+      threshold: 1.0,
+    };
+    const callback = (entries, observer) => {
+      if (entries[0].isIntersecting && this.posts.length) {
+        this.fetchMorePosts();
+      }
+    };
+    const observer = new IntersectionObserver(callback, options);
+    observer.observe(this.$refs.observer);
   },
   computed: {
     sortedPost() {
@@ -93,6 +125,8 @@ export default {
       );
     },
   },
+  // watch: {
+  // },
 };
 </script>
 
