@@ -1,22 +1,25 @@
 <template>
   <div @click.stop="showModal = false">
-    <navigation></navigation>
-    <h2 class="postList">История постов</h2>
+    <h2>История постов</h2>
     <my-modal :show="showModal">
-      <post-form @create="createPost" />
+      <post-form @showModel="showModal = false" />
     </my-modal>
     <div class="blog-header">
       <my-button @click.stop="showModal = true">Добавить пост</my-button>
-      <my-input placeholder="Поиск..." v-model="searchQuery" />
+      <my-input
+        placeholder="Поиск..."
+        :model-value="searchQuery"
+        @update:model-value="setSearchQuery"
+      />
     </div>
-    <h3 class="postList" v-if="isLoading">Получение данных от сервера...</h3>
+    <h3 v-if="isLoading">Получение данных от сервера...</h3>
     <post-list
       v-else
       :posts="sortedSearchedPosts"
-      @remove="removePost"
       :sortOptions="sortOptions"
       :sortType="sortType"
-      @sortPosts="sortPosts"
+      @remove="removePost"
+      @sortPosts="setSortType"
     />
     <div ref="observer" class="observer"></div>
   </div>
@@ -26,6 +29,8 @@
 import PostForm from "@/components/PostForm";
 import PostList from "@/components/PostList";
 import axios from "axios";
+import { mapState, mapGetters, mapMutations, mapActions } from "vuex";
+
 export default {
   components: {
     PostList,
@@ -33,70 +38,17 @@ export default {
   },
   data() {
     return {
-      posts: [],
       showModal: false,
-      isLoading: false,
-      sortType: "default",
-      searchQuery: "",
-      currentPage: 1,
-      limit: 10,
-      totalPages: 0,
-      sortOptions: [
-        { value: "title", name: "По заголовку" },
-        { value: "body", name: "По содержимому" },
-      ],
     };
   },
   methods: {
-    createPost(newPost) {
-      this.posts.unshift(newPost);
-      this.showModal = false;
-    },
-    sortPosts(sortType) {
-      this.sortType = sortType;
-    },
-    removePost(post) {
-      this.posts = this.posts.filter((p) => p.id !== post.id);
-    },
-    async fetchPosts() {
-      try {
-        this.isLoading = true;
-        const response = await axios.get(
-          "https://jsonplaceholder.typicode.com/posts/",
-          {
-            params: {
-              _page: this.currentPage,
-              _limit: this.limit,
-            },
-          }
-        );
-        this.posts = response.data;
-        this.totalPages = Math.ceil(
-          response.headers["x-total-count"] / this.limit
-        );
-      } catch (e) {
-        console.log(e);
-      } finally {
-        this.isLoading = false;
-      }
-    },
-    async fetchMorePosts() {
-      try {
-        this.currentPage++;
-        const response = await axios.get(
-          "https://jsonplaceholder.typicode.com/posts/",
-          {
-            params: {
-              _page: this.currentPage,
-              _limit: this.limit,
-            },
-          }
-        );
-        this.posts = [...this.posts, ...response.data];
-      } catch (e) {
-        console.log(e);
-      }
-    },
+    ...mapMutations([
+      "setCurrentPage",
+      "setSearchQuery",
+      "removePost",
+      "setSortType",
+    ]),
+    ...mapActions(["fetchPosts", "fetchMorePosts"]),
   },
   mounted() {
     this.fetchPosts();
@@ -113,16 +65,17 @@ export default {
     observer.observe(this.$refs.observer);
   },
   computed: {
-    sortedPost() {
-      return [...this.posts].sort((post1, post2) =>
-        post1[this.sortType]?.localeCompare(post2[this.sortType])
-      );
-    },
-    sortedSearchedPosts() {
-      return this.sortedPost.filter((post) =>
-        post.title.toLowerCase().includes(this.searchQuery.toLowerCase())
-      );
-    },
+    ...mapState({
+      posts: (state) => state.posts,
+      isLoading: (state) => state.isLoading,
+      sortType: (state) => state.sortType,
+      searchQuery: (state) => state.searchQuery,
+      currentPage: (state) => state.currentPage,
+      limit: (state) => state.limit,
+      totalPages: (state) => state.totalPages,
+      sortOptions: (state) => state.sortOptions,
+    }),
+    ...mapGetters(["sortedPost", "sortedSearchedPosts"]),
   },
 };
 </script>

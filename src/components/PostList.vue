@@ -22,6 +22,7 @@
 
 <script>
 import PostItem from "@/components/PostItem";
+import { mapMutations } from "vuex";
 export default {
   components: {
     PostItem,
@@ -38,6 +39,9 @@ export default {
     sortType: {
       type: String,
     },
+  },
+  methods: {
+    ...mapMutations(["removePost"]),
   },
 };
 </script>

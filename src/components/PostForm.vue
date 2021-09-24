@@ -1,13 +1,14 @@
 <template>
   <form class="form" @submit.prevent>
     <h5>Новый пост</h5>
-    <my-input placeholder="Название поста" v-model="newPost.title" />
+    <my-input v-focus placeholder="Название поста" v-model="newPost.title" />
     <my-input placeholder="Описание поста" v-model="newPost.body" />
     <my-buttton class="btn" @click="createPost">Добавить пост</my-buttton>
   </form>
 </template>
 
 <script>
+import { mapMutations } from "vuex";
 export default {
   data() {
     return {
@@ -18,16 +19,18 @@ export default {
     };
   },
   methods: {
+    ...mapMutations(["addNewPost"]),
     createPost() {
       if (!this.newPost.title.trim() || !this.newPost.body.trim()) {
         return false;
       }
       this.newPost.id = Date.now();
-      this.$emit("create", this.newPost);
+      this.addNewPost(this.newPost);
       this.newPost = {
         title: "",
         body: "",
       };
+      this.$emit("showModel");
     },
   },
 };

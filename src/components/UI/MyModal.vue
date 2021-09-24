@@ -33,4 +33,8 @@ export default {
   min-width: 350px;
   min-height: 150px;
 }
+.modal__content input {
+  margin: 5px 0;
+  min-width: 100%;
+}
 </style>

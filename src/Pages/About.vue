@@ -1,8 +1,6 @@
 <template>
   <div>
-    <h2>
-      Main page
-    </h2>
+    <h2>Информация о сайте</h2>
   </div>
 </template>
 <script>

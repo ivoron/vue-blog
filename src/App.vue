@@ -1,14 +1,11 @@
 <template>
   <div class="app">
-    <router-view>
-
-    </router-view>
+    <navigation></navigation>
+    <router-view> </router-view>
   </div>
 </template>
 <script>
-export default {
-  
-}
+export default {};
 </script>
 <style>
 * {
@@ -17,6 +14,6 @@ export default {
   box-sizing: border-box;
 }
 .app {
-  margin: 10px;
+  padding: 10px;
 }
 </style>
